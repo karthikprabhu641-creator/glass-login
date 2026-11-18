@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
+  <script>
+    /* Apply the saved theme before first paint (no flash) */
+    try {
+      var saved = localStorage.getItem('cm-theme');
+      if (saved === 'light' || saved === 'dark') document.documentElement.dataset.theme = saved;
+    } catch (e) {}
+  </script>
+  <title>Glassvidia — Sign in</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%23000'/%3E%3Cpath d='M33.19 16.29A12 12 0 1 0 33.19 31.71' fill='none' stroke='%23fff' stroke-width='3.4' stroke-linecap='round'/%3E%3Ccircle cx='34' cy='24' r='2.7' fill='%23fff'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="style.css" />
+  <noscript>
+    <style>
+      #preloader { display: none !important; }
+      .controls { display: none !important; }
+      .login-wrapper, .stagger { opacity: 1 !important; transform: none !important; filter: none !important; }
+    </style>
+  </noscript>
+</head>
+<body>
+  <!-- Monochrome liquid-chrome background (WebGL) -->
+  <canvas id="liquid-canvas"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ============ Loading screen ============ -->
+  <div id="preloader" role="status" aria-live="polite" aria-label="Loading Glassvidia">
+    <div class="pl-half pl-top"></div>
+    <div class="pl-half pl-bottom"></div>
+    <div class="pl-seam"></div>
+
+    <div class="pl-center">
+      <svg class="pl-mark" viewBox="0 0 48 48" aria-hidden="true">
+        <path class="pl-mark-arc" pathLength="100" d="M33.19 16.29A12 12 0 1 0 33.19 31.71" />
+        <circle class="pl-mark-dot" cx="34" cy="24" r="2.7" />
+      </svg>
+
+      <!-- Two stacked copies: dim outline underneath, bright fill revealed on top -->
+      <h2 class="pl-name" id="pl-name">
+        <span class="pl-base" aria-hidden="true">Glassvidia</span>
+        <span class="pl-fill" aria-hidden="true">Glassvidia</span>
+        <span class="sr-only">Glassvidia</span>
+      </h2>
+      <p class="pl-tag" id="pl-tag">
+        <span class="pl-base" aria-hidden="true">Designed by KARTHIK with ♡.</span>
+        <span class="pl-fill" aria-hidden="true">Designed by KARTHIK with ♡.</span>
+        <span class="sr-only">Designed by KARTHIK with ♡.</span>
+      </p>
+    </div>
+
+    <div class="pl-foot" aria-hidden="true">
+      <span class="pl-foot-label">Loading</span>
+      <span class="pl-count" id="pl-count">000</span>
+    </div>
+    <div class="pl-bar" aria-hidden="true"><i id="pl-bar-fill"></i></div>
+  </div>
+
+  <!-- ============ Login ============ -->
+  <main class="login-wrapper">
+    <div class="login-card" id="login-card">
+      <div class="logo stagger" style="--i:0">
+        <svg viewBox="0 0 48 48" width="30" height="30" aria-hidden="true">
+          <path d="M33.19 16.29A12 12 0 1 0 33.19 31.71" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" />
+          <circle cx="34" cy="24" r="2.7" fill="currentColor" />
+        </svg>
+      </div>
+
+      <h1 class="card-title stagger" style="--i:1">Glassvidia</h1>
+      <p class="subtitle stagger" style="--i:2">Sign in to continue</p>
+
+      <form id="login-form">
+        <div class="input-group stagger" style="--i:3">
+          <label for="email">Email</label>
+          <div class="input-wrapper">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="5" width="18" height="14" rx="3" />
+                <path d="M3 7l9 6 9-6" />
+              </svg>
+            </span>
+            <input type="email" id="email" placeholder="name@example.com" required autocomplete="email" />
+            <div class="focus-ring"></div>
+          </div>
+        </div>
+
+        <div class="input-group stagger" style="--i:4">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="10" rx="3" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </span>
+            <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password" />
+            <button type="button" class="toggle-password" id="toggle-password" aria-label="Show password" title="Show password">
+              <svg class="eye-open" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+              <svg class="eye-closed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                <line x1="1" y1="1" x2="23" y2="23" />
+              </svg>
+            </button>
+            <div class="focus-ring"></div>
+          </div>
+        </div>
+
+        <div class="options stagger" style="--i:5">
+          <label class="remember" for="remember">
+            <input type="checkbox" id="remember" />
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="login-btn glass-btn stagger" style="--i:6">
+          <span class="btn-label">Sign In</span>
+        </button>
+      </form>
+
+      <div class="divider stagger" style="--i:7"><span>or continue with</span></div>
+
+      <div class="socials stagger" style="--i:8">
+        <button type="button" class="social-btn glass-btn" title="Continue with Apple" aria-label="Apple">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+          </svg>
+        </button>
+        <button type="button" class="social-btn glass-btn" title="Continue with Google" aria-label="Google">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+        </button>
+      </div>
+
+      <p class="signup stagger" style="--i:9">
+        Don’t have an account? <a href="#">Sign up</a>
+      </p>
+
+      <div class="brand-credit stagger" style="--i:10" aria-label="Glassvidia designer signature">
+        <span>Designed by <strong>KARTHIK</strong> with <span class="credit-heart" aria-hidden="true">♡</span></span>
+      </div>
+    </div>
+  </main>
+
+  <!-- ============ AgriSence Corp Disease Finder (post sign-in) ============ -->
+  <main id="agri-app" class="agri-app" aria-hidden="true">
+    <header class="agri-topbar agri-glass">
+      <div class="agri-brand">
+        <div class="agri-symbol" aria-hidden="true">A<span>✦</span></div>
+        <div><strong>AgriSence <span>Corp.</span></strong><small>PLANT HEALTH INTELLIGENCE</small></div>
+      </div>
+      <div class="agri-top-actions"><span class="status-pill"><i></i> LOCAL DEMO</span><button class="agri-icon-btn" id="agri-logout" title="Back to sign in" aria-label="Back to sign in">↗</button></div>
+    </header>
+
+    <section class="agri-hero">
+      <div><p class="agri-eyebrow">FIELD INTELLIGENCE / 01</p><h1>Plant disease<br><em>finder.</em></h1><p class="agri-lead">A clearer view of crop health starts with one leaf.</p></div>
+      <div class="agri-orb" aria-hidden="true"><span>✳</span><i></i><b></b></div>
+    </section>
+
+    <section class="agri-workspace">
+      <article class="agri-panel agri-upload-panel agri-glass">
+        <div class="panel-heading"><div><span class="step-number">01</span><h2>Upload a leaf</h2></div><span class="panel-note">IMAGE INPUT</span></div>
+        <label class="dropzone" id="agri-dropzone" for="leaf-file">
+          <input id="leaf-file" type="file" accept="image/*" hidden />
+          <div class="upload-visual" id="upload-visual"><div class="scan-frame"><span>＋</span></div></div>
+          <strong id="upload-title">Drop your leaf image here</strong><span id="upload-subtitle">or click to browse · JPG, PNG, WEBP</span>
+          <small>For best results, use a clear photo with one leaf in focus.</small>
+        </label>
+        <div class="agri-fields"><label>Crop type<select id="crop-type"><option value="auto">Auto detect crop</option><option>Tomato</option><option>Potato</option><option>Rice</option><option>Wheat</option><option>Maize</option><option>Apple</option><option>Grape</option><option>Chilli</option></select></label><label>Growing stage<select id="crop-stage"><option>Not specified</option><option>Seedling</option><option>Vegetative</option><option>Flowering</option><option>Fruiting</option></select></label></div>
+        <button class="agri-primary" id="analyze-leaf" disabled><span>Analyze leaf</span><span>↗</span></button>
+        <p class="agri-privacy"><span>⌁</span> Image stays in this browser in this demo.</p>
+      </article>
+
+      <article class="agri-panel agri-results agri-glass" aria-live="polite">
+        <div class="panel-heading"><div><span class="step-number">02</span><h2>Analysis report</h2></div><span class="panel-note">INSIGHT</span></div>
+        <div class="report-empty" id="report-empty"><div class="empty-orbit"><span>✧</span><i></i></div><h3>Waiting for a leaf</h3><p>Upload a crop image and run an analysis to see the report here.</p><div class="empty-lines"><i></i><i></i><i></i></div></div>
+        <div class="report-content" id="report-content" hidden>
+          <div class="report-status"><span class="report-dot"></span><span>DEMO RESULT · NOT A REAL DIAGNOSIS</span></div>
+          <div class="report-disease"><div><small>DEMO PATTERN</small><h3 id="disease-name">Possible leaf spot</h3></div><span class="confidence" id="confidence">—</span></div>
+          <div class="confidence-track"><i id="confidence-fill"></i></div>
+          <p class="report-summary" id="report-summary"></p>
+          <div class="report-advice"><span>CARE NOTES</span><ul id="care-list"></ul></div>
+          <button class="agri-secondary" id="reset-analysis">Analyze another image <span>↻</span></button>
+        </div>
+        <div class="report-footer"><span>AGRI / SENSE</span><span>FIELD NOTES · 001</span></div>
+      </article>
+    </section>
+    <footer class="agri-footer agri-credits" aria-label="Website credits">
+      <div class="footer-statement">
+        <div class="statement-row row-main">
+          <span class="txt-big">BUILT</span>
+          <span class="txt-connector">for</span>
+          <span class="txt-big">FARMERS</span>
+        </div>
+        <div class="statement-row row-sub">
+          <span class="txt-connector">with</span>
+          <span class="txt-mid heart">❤️</span>
+          <span class="txt-connector">by</span>
+          <span class="txt-mid author">Karthik</span>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script src="liquid.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
